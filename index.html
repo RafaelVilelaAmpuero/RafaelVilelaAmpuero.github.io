@@ -1,98 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Generador de QR</title>
-  <!-- Enlaza la hoja de estilos externa -->
-  <link rel="stylesheet" href="styles.css" />
-  <!-- Librería QR -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
-    integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador de Código QR</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 16px;
+    }
+    #qr-code {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 
-  <header class="cabecera"><img src="images.png" class="imagen-responsiva" alt=""/>
-	</header>
-	<h2><center>BIENVENIDOS AL NUEVO SISTEMA DE RECOJO DE CANASTA </center></h2>
-	<article class="articulo">Con el fin de brindarles una mejor atención y rapidez en las entregas de nuestras canastas, ponenmos a disposicion, el nuevo sistema de generación de QR, donde usted podra recoger su canasta únicamente presentando su QR generado.</article>
+  <h2>Generar Código QR</h2>
 
-   
-	
-<div class="container">
-  <form id="formQR" class="formulario">
-      <div class="campo"><label for="apellido1">Apellido Paterno:</label><input type="text" style="text-transform: uppercase;" id="apellido1"></div>
-      <div class="campo"><label for="apellido2">Apellido Materno:</label><input type="text" id="apellido2"></div>
-      <div class="campo"><label for="nombres">Nombres:</label><input type="text" id="nombres"></div>
-      <div class="campo"><label for="ci">Carnet de identidad:</label><input type="text" id="ci"></div>
-      <div class="acciones">
-        <button id="boton" type="submit">Generar QR</button>
-      </div>
-      <div id="errorMsg" class="mensaje-error"></div>
-    </form>
-    <div id="qrcode"></div>
-    <a id="downloadLink" class="btn-descarga" hidden>Descargar QR</a>
-  </div>
+  <input type="text" id="paterno" placeholder="Apellido Paterno" />
+  <input type="text" id="materno" placeholder="Apellido Materno" />
+  <input type="text" id="nombres" placeholder="Nombres" />
+  <input type="text" id="ci" placeholder="Carnet de Identidad" />
+  
+  <button onclick="generarQR()">Generar QR</button>
+
+  <div id="qr-code"></div>
+  <a id="descargar" style="display:none;" download="codigo_qr.png">Descargar QR</a>
 
   <script>
-    const form = document.getElementById('formQR');
-    const divQR = document.getElementById('qrcode');
-    const downloadLink = document.getElementById('downloadLink');
-    const err = document.getElementById('errorMsg');
-    let qrInstance;
+    function generarQR() {
+      const paterno = document.getElementById("paterno").value.trim();
+      const materno = document.getElementById("materno").value.trim();
+      const nombres = document.getElementById("nombres").value.trim();
+      const ci = document.getElementById("ci").value.trim();
 
-    form.addEventListener('submit', ev => {
-      ev.preventDefault();
-      err.textContent = "";
-      downloadLink.hidden = true;
-      divQR.innerHTML = "";
-
-      const ap1 = document.getElementById('apellido1').value.trim();
-      const ap2 = document.getElementById('apellido2').value.trim();
-      const noms = document.getElementById('nombres').value.trim();
-      const ci = document.getElementById('ci').value.trim();
-
-      if (!ap1 || !ap2 || !noms || !ci) {
-        err.textContent = "Todos los campos son obligatorios.";
+      if (!paterno || !materno || !nombres || !ci) {
+        alert("Por favor completa todos los campos.");
         return;
       }
 
-      const contenido = `${ap1} ${ap2} ${noms} ${ci}`;
+      const datos = `Apellido Paterno: ${paterno}\nApellido Materno: ${materno}\nNombres: ${nombres}\nCI: ${ci}`;
 
-      qrInstance = new QRCode(divQR, {
-        text: contenido,
-        width: 200,
-        height: 200,
-        colorDark: "#000",
-        colorLight: "#fff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
+      const qrCodeDiv = document.getElementById("qr-code");
+      qrCodeDiv.innerHTML = ""; // Limpiar contenido anterior
 
-      // Esperar renderizado QR antes de convertir en imagen
-   setTimeout(() => {
-        const img = divQR.querySelector("img");
-        const dataURL = img?.src ?? divQR.querySelector("canvas")?.toDataURL("image/png");
-        if (dataURL) {
-          downloadLink.href = dataURL;
-          downloadLink.download = "qr_info.png";
-          downloadLink.hidden = false;
+      // Crear un canvas para el código QR
+      QRCode.toCanvas(datos, { errorCorrectionLevel: 'H' }, function (err, canvas) {
+        if (err) {
+          console.error(err);
+          alert("Error generando el código QR.");
+          return;
         }
-      }, 300);
-    });
-		
-		
-    
 
+        qrCodeDiv.appendChild(canvas);
 
-	  <script>
-  
-        
-    
-
+        // Convertir canvas a imagen y preparar descarga
+        const imgData = canvas.toDataURL("image/png");
+        const link = document.getElementById("descargar");
+        link.href = imgData;
+        link.style.display = "inline-block";
+        link.textContent = "Descargar QR";
+      });
+    }
+  </script>
 </body>
 </html>
+
 
 
 
