@@ -81,6 +81,18 @@
         }
       }, 300);
     });
+		
+		
+		
+		
+		// Detectar iOS (Safari)
+    if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+        alert("Mantén presionada la imagen y selecciona 'Guardar imagen'");
+        window.open(imagen); // Mostrar imagen para que el usuario la guarde manualmente
+    } else {
+        enlace.click(); // Funciona en Android y PC
+    }
+});
   </script>
 
 </body>
