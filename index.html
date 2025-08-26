@@ -1,50 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF‑8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- 
-  <title>Generador de QR con estilo</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    .form-group { margin-bottom: 10px; }
-    label { display: block; margin-bottom: 4px; }
-    input[type="text"], input[type="color"], input[type="number"] {
-      width: 100%; padding: 6px;
-    }
-    #qr-container { margin-top: 20px; }
-    canvas { border: 1px solid #ccc; }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Generador de QR</title>
+  <!-- Enlaza la hoja de estilos externa -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Librería QR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+    integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	
 </head>
 <body>
-  <div id="container"><img src="images.png" width="366" height="138" alt=""/>
-	  <h2><center>BIENVENIDOS AL NUEVO SISTEMA DE RECOJO</center></h2>
-	  <p>Con el fin de brindarles una mejor atención y rapidez en las entrgas de nuestras canastas, ponenmos a disposicion, el nuevo sistema de generación de QR, donde usted podra recoger su canasta únicamente presentando su QR generado. </p>
-    <h1>Generador de QR </h1>
-  <div class="form-group">
-    <label for="text">Introduzac apellidos y nombres</label>
-    <input id="text" type="text" placeholder="Perez Roca Juan" />
-  </div>
-  
-  
-  
-<button id="generate">Generar QR</button>
-  <div id="qr-container">
-    <canvas id="qr"></canvas>
+
+  <header class="cabecera"><img src="images.png" class="imagen-responsiva" alt=""/>
+	</header>
+	<h2><center>BIENVENIDOS AL NUEVO SISTEMA DE RECOJO DE CANASTA </center></h2>
+	<article class="articulo">Con el fin de brindarles una mejor atención y rapidez en las entrgas de nuestras canastas, ponenmos a disposicion, el nuevo sistema de generación de QR, donde usted podra recoger su canasta únicamente presentando su QR generado.</article>
+
+   
+	
+<div class="container">
+  <form id="formQR" class="formulario">
+      <div class="campo"><label for="apellido1">Apellido Paterno:</label><input type="text" style="text-transform: uppercase;" id="apellido1"></div>
+      <div class="campo"><label for="apellido2">Apellido Materno:</label><input type="text" id="apellido2"></div>
+      <div class="campo"><label for="nombres">Nombres:</label><input type="text" id="nombres"></div>
+      <div class="campo"><label for="ci">Carnet de identidad:</label><input type="text" id="ci"></div>
+      <div class="acciones">
+        <button id="boton" type="submit">Generar QR</button>
+      </div>
+      <div id="errorMsg" class="mensaje-error"></div>
+    </form>
+    <div id="qrcode"></div>
+    <a id="downloadLink" class="btn-descarga" hidden>Descargar QR</a>
   </div>
 
-    <script>
-    const qr = new QRious({ element: document.getElementById('qr') });
-    document.getElementById('generate').addEventListener('click', () => {
-      const text = document.getElementById('text').value.trim();
-      if (!text) return alert('Ingresa un texto o URL');
-      qr.set({
-        value: text,
-        
-        level: 'H'
+  <script>
+    const form = document.getElementById('formQR');
+    const divQR = document.getElementById('qrcode');
+    const downloadLink = document.getElementById('downloadLink');
+    const err = document.getElementById('errorMsg');
+    let qrInstance;
+
+    form.addEventListener('submit', ev => {
+      ev.preventDefault();
+      err.textContent = "";
+      downloadLink.hidden = true;
+      divQR.innerHTML = "";
+
+      const ap1 = document.getElementById('apellido1').value.trim();
+      const ap2 = document.getElementById('apellido2').value.trim();
+      const noms = document.getElementById('nombres').value.trim();
+      const ci = document.getElementById('ci').value.trim();
+
+      if (!ap1 || !ap2 || !noms || !ci) {
+        err.textContent = "Todos los campos son obligatorios.";
+        return;
+      }
+
+      const contenido = `${ap1} ${ap2} ${noms} ${ci}`;
+
+      qrInstance = new QRCode(divQR, {
+        text: contenido,
+        width: 256,
+        height: 256,
+        colorDark: "#000",
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel.H
       });
+
+      // Esperar renderizado QR antes de convertir en imagen
+      setTimeout(() => {
+        const img = divQR.querySelector("img");
+        const dataURL = img?.src ?? divQR.querySelector("canvas")?.toDataURL("image/png");
+        if (dataURL) {
+          downloadLink.href = dataURL;
+          downloadLink.download = "qr_info.png";
+          downloadLink.hidden = false;
+        }
+      }, 300);
     });
   </script>
-</div>
+
 </body>
 </html>
