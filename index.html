@@ -71,7 +71,7 @@
       });
 
       // Esperar renderizado QR antes de convertir en imagen
-   /*   setTimeout(() => {
+   setTimeout(() => {
         const img = divQR.querySelector("img");
         const dataURL = img?.src ?? divQR.querySelector("canvas")?.toDataURL("image/png");
         if (dataURL) {
@@ -80,37 +80,10 @@
           downloadLink.hidden = false;
         }
       }, 300);
-    });*/
-		
-		
-		   // Esperar imagen del QR
-        setTimeout(() => {
-            const img = divQR.querySelector("img");
-            const canvas = divQR.querySelector("canvas");
-            const dataURL = img?.src ?? canvas?.toDataURL("image/png");
-
-            if (dataURL) {
-                downloadLink.hidden = false;
-
-                // Forzar descarga en móviles usando Blob
-                downloadLink.onclick = (e) => {
-                    e.preventDefault();
-                    fetch(dataURL)
-                        .then(res => res.blob())
-                        .then(blob => {
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = "qr_info.png";
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                        });
-                };
-            }
-        }, 500);
     });
+		
+		
+    
 
 
 	  <script>
@@ -118,25 +91,13 @@
 
   
 
-      // Esperar renderizado QR antes de convertir en imagen
-   /*   setTimeout(() => {
-        const img = divQR.querySelector("img");
-        const dataURL = img?.src ?? divQR.querySelector("canvas")?.toDataURL("image/png");
-        if (dataURL) {
-          downloadLink.href = dataURL;
-          downloadLink.download = "qr_info.png";
-          downloadLink.hidden = false;
-        }
-      }, 300);
-    });*/
-		
-		
-		   // Esperar imagen del QR
+      //
         
     
 
 </body>
 </html>
+
 
 
 
