@@ -27,15 +27,15 @@
 		<input type="text" style="text-transform: uppercase;" id="paterno">
 	  </div>
       <div class="campo"><label for="apellido2">Apellido Materno:</label>
-		<input type="text" id="materno">
+		<input type="text" style="text-transform: uppercase;" id="materno">
 	  </div>
       <div class="campo">
 		  <label for="nombres">Nombres:</label>
-			<input type="text" id="nombres">
+			<input type="text" style="text-transform: uppercase;" id="nombres">
 	  </div>
       <div class="campo">
 		  <label for="ci">Carnet de identidad:</label>
-	<input type="text" id="ci">
+	<input type="number" id="ci">
 	  </div>
 	  
 	 
@@ -44,13 +44,16 @@
 	  
       
 	   <div class="acciones">
-        <button onclick="generarQR()">Generar QR</button>
+        <button onclick="generarQR()" class="boton">Generar QR</button>
       </div>
 	  
       <div id="qr-code"></div>
 	  
 	    </div> 
-  <a id="descargar" style="display:none;" download="codigo_qr.png">Descargar QR</a>
+	
+	 <div class="descarga">
+  <a id="descargar" style="display:none;" download="codigo_qr.png" >Descargar QR</a>
+		 </div> 
     
   <script>
     function generarQR() {
